@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>search-interface</title>
+  <script src="dist/js/main.js" defer async></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    app {
+      height: 500px;
+      outline: 1px red dotted;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    div {
+      box-sizing: border-box;
+    }
+
+    .search-result {
+      overflow-y: scroll;
+    }
+
+    .loading {
+      position: absolute;
+      top: 300px;
+      left: 100px;
+      font-size: 56px;
+    }
+
+    .invisible {
+      display: none;
+    }
+
+    .result-items {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      list-style: none;
+    }
+  </style>
+</head>
+<body>
+<app>
+  <div class="input">
+    <input class="input_name" type="text" placeholder="e.g. Batman" name="search-input" autofocus>
+    <button class="search_button">Искать</button>
+  </div>
+  <div class="search-result"></div>
+  <div class="loading  invisible">Loading...</div>
+</app>
+
+<script type="text/template" id="result-template">
+  <img src="<%= Poster %>" alt="poster" class="poster">
+  <div class="title"><%= Title %></div>
+  <div class="year"><%= Year %></div>
+</script>
+</body>
+</html>
