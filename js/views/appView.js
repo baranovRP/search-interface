@@ -17,7 +17,6 @@ export default class AppView extends Backbone.View {
       {
         events: {
           'click .search_button': 'fetchData',
-          'scroll .search-result': 'checkScroll',
           keypress: 'sendRequest',
         },
       },
@@ -32,6 +31,7 @@ export default class AppView extends Backbone.View {
     this.$apiEndpoint = 'http://www.omdbapi.com';
 
     this.render();
+    this.$result.on('scroll', _.bind(this.checkScroll, this));
   }
 
   render() {
@@ -49,7 +49,6 @@ export default class AppView extends Backbone.View {
       return;
     }
     this.collection.url = `${this.$apiEndpoint}/?type=movie&s=${this.$input._val}`;
-    // this.collection.fetch();
     this.collection.fetch().then(() => this.$loading.addClass('invisible'));
     this.clearInputFields();
   }
