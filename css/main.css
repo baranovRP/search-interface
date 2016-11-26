@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+app {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  outline: 1px red dotted;
+}
+
+div {
+  box-sizing: border-box;
+}
+
+.input {
+  margin: 0 auto;
+}
+
+.search-result {
+  overflow-y: auto;
+  height: 500px;
+}
+
+.loading {
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  display: block;
+  height: 100px;
+}
+
+.invisible {
+  display: none;
+}
+
+.result-items {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  flex-wrap: wrap;
+}

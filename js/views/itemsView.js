@@ -4,10 +4,7 @@
 
 import $ from 'jquery';
 import sortable from 'jquery-ui-bundle';
-import _ from 'underscore';
 import Backbone from 'backbone';
-
-import ItemView from './itemView';
 
 export default class ItemsView extends Backbone.View {
 
@@ -23,10 +20,7 @@ export default class ItemsView extends Backbone.View {
   }
 
   render() {
-    this.collection.forEach((item) => {
-      const itemView = new ItemView({ model: item });
-      this.$el.append(itemView.render().el);
-    });
+    this.$el.html('<li class="loading  invisible">Loading...</li>');
     return this;
   }
 }

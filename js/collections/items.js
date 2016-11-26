@@ -11,6 +11,8 @@ export default class Items extends Backbone.Collection {
   constructor(options) {
     super(options);
     this.model = Item;
+    this.apiEndpoint = 'http://www.omdbapi.com';
+    this.page = 0;
   }
 
   parse(data) {
