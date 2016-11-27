@@ -30,6 +30,7 @@ export default class AppView extends Backbone.View {
 
     this.$input = this.$('.input_name');
     this.$result = this.$('.search-result');
+    this.$loading = this.$result.children('.loading');
 
     this.render();
     this.$result.on('scroll', _.bind(this.checkScroll, this));
@@ -52,46 +53,39 @@ export default class AppView extends Backbone.View {
   }
 
   fetchData() {
-    const $loading = this.$result.children('.loading');
     const self = this;
     if (this.collection.isLoading) return;
     if (!this.collection.query && !this.$input.val()) return;
     if (this.$input.val() !== '') this.collection.query = this.$input.val();
     this.$input.val('');
 
-    $loading.removeClass('invisible');
+    this.$loading.removeClass('invisible');
     this.collection.isLoading = true;
 
     this.collection.url = `${this.collection.apiEndpoint}/?type=movie&s=${this.collection.query}&page=${this.collection.page}`;
     this.collection.fetch().then(() => {
-      console.log('total: ' + self.collection.data.totalResults);
+      console.log(`Total result: ${self.collection.data.totalResults}`);
       if (self.collection.data.Error) {
-        $loading.text(`${self.collection.data.Error}`);
-        $loading.addClass('error');
+        self.$loading.text(`${self.collection.data.Error}`);
+        self.$loading.addClass('error');
         self.collection.isLoading = true;
       } else {
         self.collection.isLoading = false;
         if (self.isMoviesPresent(self.collection.data)) self.collection.page++;
-        $loading.addClass('invisible');
-        if (self.isMoviesPresent(self.collection.data) && self.downLoadIfRequired()) self.fetchData();
+        self.$loading.addClass('invisible');
+        if (self.isMoviesPresent(self.collection.data)
+          && self.downLoadIfRequired()) self.fetchData();
       }
+    }, (error) => {
+      self.$loading.text(`Unexpected error in attempt to fetch 'search request': ${error.statusText}`);
+      console.log(`Unexpected error in attempt to fetch 'search request': ${JSON.stringify(error)}`);
     });
   }
 
   sendRequest(e) {
     if (e.type !== 'click' && e.keyCode !== 13) return;
-    if (this.collection.length) {
-      const length = this.collection.length;
-      for (let i = length - 1; i + 1 > 0; i--) {
-        this.collection.at(i).destroy();
-      }
-    }
-    this.collection.page = 1;
-    if (this.collection.query) this.collection.query = '';
-    this.$result.children('.loading').addClass('invisible');
-    this.$result.children('.loading').text('Loading...');
-    this.$result.children('.result-items').empty();
-    this.collection.isLoading = false;
+    this.revertCollectionToInitialState();
+    this.revertHtmlToInitialState();
     this.fetchData();
   }
 
@@ -99,24 +93,27 @@ export default class AppView extends Backbone.View {
     e.preventDefault();
     const delayMs = 100;
     clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(this.preloadEl(), delayMs);
+    scrollTimeout = setTimeout(this.preloadNewData(), delayMs);
   }
 
-  preloadEl() {
-    const data = this.collection.data;
-    console.log('collection.isLoading: '
-      + this.collection.isLoading
-      + ', page: ' + this.collection.page);
-    if (data.Error
-      || this.collection.isLoading
-      || !this.isMoviesPresent(data)
-      || this.isFetchNotRequired()) return;
+  preloadNewData() {
+    console.log(`Current state: ${this.collection.isLoading}, page: ${this.collection.page}`);
+    const newDataRequired = this.isNewDataRequired(this.collection.data);
+    if (!newDataRequired) return;
     this.fetchData();
   }
 
-  isFetchNotRequired() {
+  isNewDataRequired(data) {
+    return !(data.Error || this.collection.isLoading
+    || !this.isMoviesPresent(data) || !this.isFetchRequired());
+  }
+
+  isFetchRequired() {
+    const bufferPx = 50;
     const scrollHeight = this.$result.prop('scrollHeight');
-    return (scrollHeight - this.$result.prop('scrollTop') - 50 <= this.$result.prop('clientHeight'));
+    const scrollTop = this.$result.prop('scrollTop');
+    const clientHeight = this.$result.prop('clientHeight');
+    return (scrollHeight - scrollTop - bufferPx) < clientHeight;
   }
 
   isMoviesPresent(data) {
@@ -127,5 +124,23 @@ export default class AppView extends Backbone.View {
 
   downLoadIfRequired() {
     return this.$result.prop('scrollHeight') <= this.$result.prop('clientHeight');
+  }
+
+  revertCollectionToInitialState() {
+    if (this.collection.length) {
+      const length = this.collection.length;
+      for (let i = length - 1; i + 1 > 0; i--) {
+        this.collection.at(i).destroy();
+      }
+    }
+    this.collection.page = 1;
+    this.collection.isLoading = false;
+    if (this.collection.query) this.collection.query = '';
+  }
+
+  revertHtmlToInitialState() {
+    this.$loading.addClass('invisible');
+    this.$loading.text('Loading...');
+    this.$result.children('.result-items').empty();
   }
 }
