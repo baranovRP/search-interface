@@ -12,11 +12,13 @@
     <input class="input_name" type="text" placeholder="e.g. Batman" name="search-input" autofocus>
     <button class="search_button">Искать</button>
   </div>
-  <div class="search-result"></div>
+  <div class="search-result">
+    <div class="loading  invisible">Loading...</div>
+  </div>
 </app>
 
 <script type="text/template" id="result-template">
-  <img src="<%= Poster %>" alt="poster" class="poster">
+  <img class="poster" src="<%= Poster %>" width="300px" height="450px" alt="poster">
   <div class="title"><%= Title %></div>
   <div class="year"><%= Year %></div>
 </script>

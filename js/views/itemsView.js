@@ -20,7 +20,6 @@ export default class ItemsView extends Backbone.View {
   }
 
   render() {
-    this.$el.html('<li class="loading  invisible">Loading...</li>');
     return this;
   }
 }

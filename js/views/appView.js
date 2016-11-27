@@ -37,22 +37,22 @@ export default class AppView extends Backbone.View {
   }
 
   render() {
-    this.$result.append(this.itemsView.render().el);
+    const $last = this.$result.children('.loading');
+    this.itemsView.render().$el.insertBefore($last);
   }
 
   addBundle() {
     const self = this;
-    const $last = self.itemsView.$el.children('.loading');
     if (this.collection.length) {
       this.collection.forEach((item) => {
         const itemView = new ItemView({ model: item });
-        itemView.render().$el.insertBefore($last);
+        self.itemsView.$el.append(itemView.render().$el);
       });
     }
   }
 
   fetchData() {
-    const $loading = this.$('.loading');
+    const $loading = this.$result.children('.loading');
     const self = this;
     if (this.collection.isLoading) return;
     if (!this.collection.query && !this.$input.val()) return;
@@ -66,13 +66,14 @@ export default class AppView extends Backbone.View {
     this.collection.fetch().then(() => {
       console.log('total: ' + self.collection.data.totalResults);
       if (self.collection.data.Error) {
-        self.$result.append(`<div class="error">${self.collection.data.Error}</div>`);
+        $loading.text(`${self.collection.data.Error}`);
+        $loading.addClass('error');
         self.collection.isLoading = true;
       } else {
         self.collection.isLoading = false;
         if (self.isMoviesPresent(self.collection.data)) self.collection.page++;
+        $loading.addClass('invisible');
       }
-      $loading.addClass('invisible');
     });
   }
 
@@ -86,7 +87,8 @@ export default class AppView extends Backbone.View {
     }
     this.collection.page = 1;
     if (this.collection.query) this.collection.query = '';
-    this.render();
+    this.$result.children('.loading').addClass('invisible');
+    this.$result.children('.result-items').empty();
     this.collection.isLoading = false;
     this.fetchData();
   }
@@ -116,7 +118,8 @@ export default class AppView extends Backbone.View {
   }
 
   isMoviesPresent(data) {
-    return data.totalResults > (document.querySelector('.result-items').childElementCount - 1)
+    const shownPosters = document.querySelector('.result-items').childElementCount;
+    return data.totalResults > shownPosters
       && this.collection.page < limit;
   }
 }
