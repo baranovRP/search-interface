@@ -73,7 +73,7 @@ export default class AppView extends Backbone.View {
         self.collection.isLoading = false;
         if (self.isMoviesPresent(self.collection.data)) self.collection.page++;
         $loading.addClass('invisible');
-        if (self.isMoviesPresent(self.collection.data) && self.uploadIfRequired()) self.fetchData();
+        if (self.isMoviesPresent(self.collection.data) && self.downLoadIfRequired()) self.fetchData();
       }
     });
   }
@@ -115,8 +115,8 @@ export default class AppView extends Backbone.View {
   }
 
   isFetchNotRequired() {
-    const scrollHeight = this.$result.prop('scrollHeight') - this.shift;
-    return (scrollHeight - 50) > this.$result.prop('scrollTop');
+    const scrollHeight = this.$result.prop('scrollHeight');
+    return (scrollHeight - this.$result.prop('scrollTop') - 50 <= this.$result.prop('clientHeight'));
   }
 
   isMoviesPresent(data) {
@@ -125,7 +125,7 @@ export default class AppView extends Backbone.View {
       && this.collection.page < limit;
   }
 
-  uploadIfRequired() {
+  downLoadIfRequired() {
     return this.$result.prop('scrollHeight') <= this.$result.prop('clientHeight');
   }
 }
