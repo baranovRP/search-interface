@@ -8239,7 +8239,7 @@
 	    var _this = _possibleConstructorReturn(this, (Items.__proto__ || Object.getPrototypeOf(Items)).call(this, options));
 	
 	    _this.model = _item2.default;
-	    _this.apiEndpoint = 'http://www.omdbapi.com';
+	    _this.apiEndpoint = 'https://www.omdbapi.com';
 	    _this.page = 0;
 	    return _this;
 	  }
