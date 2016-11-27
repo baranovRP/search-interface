@@ -7,7 +7,6 @@ app {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  outline: 1px red dotted;
 }
 
 div {
@@ -24,11 +23,11 @@ div {
 }
 
 .loading {
+  display: block;
   width: 100%;
+  height: 100px;
   text-align: center;
   font-size: 16px;
-  display: block;
-  height: 100px;
 }
 
 .invisible {
@@ -40,4 +39,25 @@ div {
   flex-direction: row;
   list-style: none;
   flex-wrap: wrap;
+}
+
+.result-item {
+  padding: 5px;
+  width: 300px;
+}
+
+.result-item .poster {
+  min-width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+.result-item .title {
+  text-align: center;
+  word-wrap: normal;
+  word-break: normal;
+}
+
+.result-item .year {
+  text-align: center;
 }
