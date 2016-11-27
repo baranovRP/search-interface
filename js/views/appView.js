@@ -73,6 +73,7 @@ export default class AppView extends Backbone.View {
         self.collection.isLoading = false;
         if (self.isMoviesPresent(self.collection.data)) self.collection.page++;
         $loading.addClass('invisible');
+        if (self.isMoviesPresent(self.collection.data) && self.uploadIfRequired()) self.fetchData();
       }
     });
   }
@@ -88,6 +89,7 @@ export default class AppView extends Backbone.View {
     this.collection.page = 1;
     if (this.collection.query) this.collection.query = '';
     this.$result.children('.loading').addClass('invisible');
+    this.$result.children('.loading').text('Loading...');
     this.$result.children('.result-items').empty();
     this.collection.isLoading = false;
     this.fetchData();
@@ -121,5 +123,9 @@ export default class AppView extends Backbone.View {
     const shownPosters = document.querySelector('.result-items').childElementCount;
     return data.totalResults > shownPosters
       && this.collection.page < limit;
+  }
+
+  uploadIfRequired() {
+    return this.$result.prop('scrollHeight') <= this.$result.prop('clientHeight');
   }
 }

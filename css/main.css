@@ -19,7 +19,7 @@ div {
 
 .search-result {
   overflow-y: auto;
-  height: 500px;
+  height: 700px;
 }
 
 .loading {
@@ -42,22 +42,25 @@ div {
 }
 
 .result-item {
+  display: block;
+  min-width: 15%;
   padding: 5px;
-  width: 300px;
 }
 
 .result-item .poster {
-  min-width: 100%;
+  width: 100px;
   height: auto;
   vertical-align: top;
 }
 
 .result-item .title {
   text-align: center;
-  word-wrap: normal;
+  word-wrap: break-word;
   word-break: normal;
+  font-size: 12px;
 }
 
 .result-item .year {
   text-align: center;
+  font-size: 12px;
 }
